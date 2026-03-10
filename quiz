@@ -790,7 +790,7 @@ h1 {
         </div>
       </div>
 
-      <button type="button" onclick="calculateLoveLanguage()">Ergebnis anzeigen</button>
+      <button type="submit">Ergebnis anzeigen</button>
     </form>
 
     <div class="error-message" id="errorMessage">
@@ -877,17 +877,14 @@ h1 {
 
     const language = loveLanguages[maxLetter];
     resultLanguage.textContent = language.name;
-    resultDescription.textContent = language.description;
 
-    // Balken-Auswertung für alle fünf Sprachen
     const maxWidth = 220;
     let barsHtml = '<div style="margin-top:24px;text-align:left;">';
 
     const order = ["A", "B", "C", "D", "E"];
     for (const letter of order) {
       const score = counts[letter];
-      const width =
-        maxScore > 0 ? (score / maxScore) * maxWidth : 0;
+      const width = maxScore > 0 ? (score / maxScore) * maxWidth : 0;
 
       barsHtml +=
         '<div style="margin-bottom:10px;">' +
@@ -897,8 +894,7 @@ h1 {
         letter +
         "): " +
         score +
-        " Punkte" +
-        "</div>" +
+        " Punkte</div>" +
         '<div style="background:#374151;width:' +
         maxWidth +
         'px;height:10px;border-radius:4px;overflow:hidden;">' +
@@ -911,22 +907,18 @@ h1 {
 
     barsHtml += "</div>";
 
-    // Beschreibung + Balken im gleichen Result-Container
     resultDescription.innerHTML =
-      "<p>" +
-      language.description +
-      "</p>" +
-      barsHtml;
+      "<p>" + language.description + "</p>" + barsHtml;
 
     resultDiv.classList.add("show");
     resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  // Absenden mit Enter-Taste verhindern, stattdessen unsere Funktion nutzen
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     calculateLoveLanguage();
   });
 </script>
+
 </body>
 </html>
