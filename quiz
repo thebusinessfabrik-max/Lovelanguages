@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welche Liebessprache sprichst du?</title>
+<style>
+:root {
+  --color-bg-base: #0f172a;
+  --color-bg-surface: #1e293b;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-primary: #38bdf8;
+  --color-primary-hover: #0ea5e9;
+  --color-border: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.intro {
+  text-align: center;
+  font-size: 1.125rem;
+  margin-bottom: 2.5rem;
+  color: var(--color-text-secondary);
+}
+
+.question {
+  background: var(--color-bg-surface);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease;
+}
+
+.question:hover {
+  transform: translateY(-2px);
+}
+
+.question-number {
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.question-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--color-text-primary);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .options {
+    grid-template-columns: 1fr;
+  }
+}
+
+.option-label {
+  display: block;
+  padding: 16px;
+  background: rgba(56, 189, 248, 0.05);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.option-label:hover {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--color-primary);
+}
+
+.option-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.option-label input[type="radio"]:checked + .option-text {
+  font-weight: 600;
+}
+
+.option-label input[type="radio"]:checked ~ .checkmark {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.option-label input[type="radio"]:checked ~ .checkmark::after {
+  display: block;
+}
+
+.option-label:has(input[type="radio"]:checked) {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--color-primary);
+}
+
+.option-text {
+  display: block;
+  padding-left: 36px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.checkmark {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  height: 20px;
+  width: 20px;
+  background-color: transparent;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-bg-base);
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 16px 32px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-bg-base);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+#result {
+  display: none;
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  padding: 32px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+#result.show {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-title {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.result-language {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--color-text-primary);
+}
+
+.result-description {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid #ef4444;
+  color: #fca5a5;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: center;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welche Liebessprache sprichst du?</h1>
+    <p class="intro">Bei jeder Frage: <strong>Was bedeutet dir mehr in einer Beziehung?</strong></p>
+
+    <form id="loveLanguageQuiz">
+      <!-- Question 1 -->
+      <div class="question">
+        <div class="question-number">Frage 1 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q1" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin sagt mir, dass er/sie mich dafür schätzt, wie ich bin.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q1" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie macht den Abwasch für mich, damit ich etwas für mein Wohlbefinden tun kann.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="question">
+        <div class="question-number">Frage 2 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q2" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich habe ein Gefühl der Sicherheit, wenn er/sie mich berührt.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q2" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie hört mir in der Beziehung stets aufmerksam zu.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question">
+        <div class="question-number">Frage 3 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich fühle mich gehört und ernst genommen.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein kleines Präsent, das mir zeigt, dass mein Partner/meine Partnerin an mich gedacht hat.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="question">
+        <div class="question-number">Frage 4 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q4" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie schenkt mir immer wieder körperliche Zärtlichkeiten im Alltag.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q4" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin macht etwas für mich, von dem ich weiß, dass es ihm/ihr eigentlich keinen Spaß bereitet.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="question">
+        <div class="question-number">Frage 5 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q5" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie ermutigt mich, wenn es mal schlecht läuft.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q5" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Wir haben regelmäßig ein Wochenende ganz für uns allein.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 6 -->
+      <div class="question">
+        <div class="question-number">Frage 6 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q6" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Wir arbeiten zu zweit an einem Projekt.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q6" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich finde ein kleines Geschenk auf meinem Kopfkissen oder am Arbeitsplatz.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 7 -->
+      <div class="question">
+        <div class="question-number">Frage 7 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q7" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin drückt mir einen Kuss auf die Stirn.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q7" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie repariert etwas für mich.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 8 -->
+      <div class="question">
+        <div class="question-number">Frage 8 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q8" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein Kompliment zu meiner Persönlichkeit.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q8" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Wir machen endlich mal wieder zusammen einen Spaziergang.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 9 -->
+      <div class="question">
+        <div class="question-number">Frage 9 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q9" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein Andenken an einen besonderen Moment.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q9" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin nimmt sich aktiv Zeit für mich.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 10 -->
+      <div class="question">
+        <div class="question-number">Frage 10 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q10" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich werde liebevoll berührt.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q10" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin übernimmt den Haushalt.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 11 -->
+      <div class="question">
+        <div class="question-number">Frage 11 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q11" value="C" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin erledigt etwas für mich.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q11" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Wir machen etwas zusammen, das nur uns verbindet.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 12 -->
+      <div class="question">
+        <div class="question-number">Frage 12 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q12" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein besonderes Geschenk, das mich an uns erinnert.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q12" value="D">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin sagt mir, wie wichtig ich ihm/ihr bin.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 13 -->
+      <div class="question">
+        <div class="question-number">Frage 13 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q13" value="C" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin unterstützt mich bei einer schwierigen Aufgabe.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q13" value="E">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie schenkt mir zärtliche Berührungen.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 14 -->
+      <div class="question">
+        <div class="question-number">Frage 14 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q14" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Wir machen etwas zusammen, das nur uns verbindet.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q14" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme eine besondere Überraschung.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 15 -->
+      <div class="question">
+        <div class="question-number">Frage 15 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q15" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme von ihm/ihr Lob für das, was ich getan habe.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q15" value="E">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich fühle mich geliebt durch Nähe und Berührungen.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 16 -->
+      <div class="question">
+        <div class="question-number">Frage 16 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q16" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin hält mit mir in der Öffentlichkeit Händchen.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q16" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin übernimmt Verantwortung, wenn ich überfordert bin.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 17 -->
+      <div class="question">
+        <div class="question-number">Frage 17 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q17" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Wir reden stundenlang über persönliche Themen.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q17" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme etwas, das mich an ihn/sie erinnert.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 18 -->
+      <div class="question">
+        <div class="question-number">Frage 18 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q18" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin schreibt mir liebevolle, persönliche Nachrichten.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q18" value="E">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin greift nach meiner Hand, wenn ich mich an einem Ort unwohl fühle.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 19 -->
+      <div class="question">
+        <div class="question-number">Frage 19 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q19" value="C" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin macht mir morgens Kaffee.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q19" value="D">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie sagt mir, dass ich geliebt werde.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 20 -->
+      <div class="question">
+        <div class="question-number">Frage 20 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q20" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein besonderes Geschenk, das mich an ihn/sie erinnert.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q20" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin übernimmt für mich eine Aufgabe, die ich nicht gerne mache.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 21 -->
+      <div class="question">
+        <div class="question-number">Frage 21 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q21" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin sagt mir, wie wichtig ich ihm/ihr bin.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q21" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin unterstützt mich im Alltag – sei es durch Hilfe im Haushalt oder anderswo.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 22 -->
+      <div class="question">
+        <div class="question-number">Frage 22 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q22" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin organisiert eine gemeinsame Aktivität.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q22" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme immer wieder eine kleine materielle Aufmerksamkeiten in der Beziehung.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 23 -->
+      <div class="question">
+        <div class="question-number">Frage 23 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q23" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich werde innig von meinem Partner/meiner Partnerin umarmt.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q23" value="D">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich höre ehrliche, positive Worte über mich.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 24 -->
+      <div class="question">
+        <div class="question-number">Frage 24 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q24" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme ein selbstgemachtes oder personalisiertes Geschenk – wie ein Fotoalbum von unserem Urlaub.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q24" value="C">
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie sich Zeit nimmt, um mit mir zusammen einen Vertrag oder ähnliches durchzulesen.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 25 -->
+      <div class="question">
+        <div class="question-number">Frage 25 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q25" value="E" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin umarmt mich lange von hinten.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q25" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Wir verbringen Zeit gemeinsam, ohne gestört zu werden.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 26 -->
+      <div class="question">
+        <div class="question-number">Frage 26 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q26" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin überrascht mich mit einem durchdachten Geschenk.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q26" value="D">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich werde regelmäßig in der Beziehung mit Worten gewertschätzt.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 27 -->
+      <div class="question">
+        <div class="question-number">Frage 27 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q27" value="B" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Wir führen ein langes, tiefes Gespräch.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q27" value="E">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin bringt mir einen Lieblingessen mit.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 28 -->
+      <div class="question">
+        <div class="question-number">Frage 28 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q28" value="C" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Er/sie hilft mir ungefragt bei etwas.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q28" value="A">
+            <span class="checkmark"></span>
+            <span class="option-text">Ich bekomme immer wieder eine kleine materielle Aufmerksamkeiten in der Beziehung.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 29 -->
+      <div class="question">
+        <div class="question-number">Frage 29 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q29" value="D" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin findet die richtigen Worte, um mich aufzumuntern.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q29" value="E">
+            <span class="checkmark"></span>
+            <span class="option-text">Mein Partner/meine Partnerin nimmt mich in den Arm, wenn ich traurig bin.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 30 -->
+      <div class="question">
+        <div class="question-number">Frage 30 von 30</div>
+        <div class="question-text">Was bedeutet dir mehr in einer Beziehung?</div>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q30" value="A" required>
+            <span class="checkmark"></span>
+            <span class="option-text">Wenn er/sie mit einem Geschenk sagt, dass er/sie an unseren Jahrestag oder einen anderen besonderen Tag denkt.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q30" value="B">
+            <span class="checkmark"></span>
+            <span class="option-text">Wir küssen uns innig.</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Ergebnis anzeigen</button>
+    </form>
+
+    <div class="error-message" id="errorMessage">
+      Bitte beantworte alle Fragen, um dein Ergebnis zu sehen.
+    </div>
+
+    <div id="result">
+      <div class="result-title">Deine dominante Liebessprache ist:</div>
+      <div class="result-language" id="resultLanguage"></div>
+      <div class="result-description" id="resultDescription"></div>
+    </div>
+  </div>
+
+  <script>
+    const loveLanguages = {
+      A: {
+        name: "Geschenke",
+        description: "Du fühlst dich geliebt, wenn dein Partner dir durchdachte Geschenke macht. Es geht nicht um den materiellen Wert, sondern um die Geste und die Bedeutung dahinter. Geschenke symbolisieren für dich Liebe und Wertschätzung."
+      },
+      B: {
+        name: "Zweisamkeit",
+        description: "Qualitätszeit mit deinem Partner ist dir am wichtigsten. Du schätzt ungeteilte Aufmerksamkeit und gemeinsame Aktivitäten. Wenn dein Partner sich bewusst Zeit für dich nimmt, fühlst du dich geliebt und wertgeschätzt."
+      },
+      C: {
+        name: "Hilfsbereitschaft",
+        description: "Du fühlst dich geliebt, wenn dein Partner dir praktisch unter die Arme greift. Handlungen sagen für dich mehr als Worte. Wenn dein Partner dir im Alltag hilft oder Aufgaben für dich übernimmt, zeigt das echte Liebe."
+      },
+      D: {
+        name: "Lob und Anerkennung",
+        description: "Worte der Wertschätzung sind für dich besonders wichtig. Komplimente, ermutigende Worte und verbale Bestätigung lassen dich die Liebe deines Partners spüren. Du brauchst diese verbale Zuneigung, um dich geliebt zu fühlen."
+      },
+      E: {
+        name: "Körperliche Zärtlichkeiten",
+        description: "Körperliche Berührungen sind für dich der wichtigste Ausdruck von Liebe. Umarmungen, Küsse, Händchenhalten und andere zärtliche Gesten geben dir das Gefühl von Nähe, Sicherheit und Zuneigung."
+      }
+    };
+
+    const form = document.getElementById('loveLanguageQuiz');
+    const resultDiv = document.getElementById('result');
+    const resultLanguage = document.getElementById('resultLanguage');
+    const resultDescription = document.getElementById('resultDescription');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      errorMessage.classList.remove('show');
+      
+      const formData = new FormData(form);
+      const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      
+      let answeredQuestions = 0;
+      for (let i = 1; i <= 30; i++) {
+        const answer = formData.get(`q${i}`);
+        if (answer) {
+          answeredQuestions++;
+          counts[answer]++;
+        }
+      }
+      
+      if (answeredQuestions < 30) {
+        errorMessage.classList.add('show');
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      
+      let maxLetter = null;
+      let maxScore = -1;
+      
+      for (const letter in counts) {
+        if (counts[letter] > maxScore) {
+          maxScore = counts[letter];
+          maxLetter = letter;
+        }
+      }
+      
+      if (maxLetter) {
+        const language = loveLanguages[maxLetter];
+        resultLanguage.textContent = language.name;
+        resultDescription.textContent = language.description;
+        resultDiv.classList.add('show');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  </script>
+</body>
+</html>
