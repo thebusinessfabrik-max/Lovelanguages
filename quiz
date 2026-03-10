@@ -790,7 +790,7 @@ h1 {
         </div>
       </div>
 
-      <button type="submit" class="submit-btn">Ergebnis anzeigen</button>
+      <button type="button" onclick="calculateLoveLanguage()">Ergebnis anzeigen</button>
     </form>
 
     <div class="error-message" id="errorMessage">
@@ -804,77 +804,129 @@ h1 {
     </div>
   </div>
 
-  <script>
-    const loveLanguages = {
-      A: {
-        name: "Geschenke",
-        description: "Du fühlst dich geliebt, wenn dein Partner dir durchdachte Geschenke macht. Es geht nicht um den materiellen Wert, sondern um die Geste und die Bedeutung dahinter. Geschenke symbolisieren für dich Liebe und Wertschätzung."
-      },
-      B: {
-        name: "Zweisamkeit",
-        description: "Qualitätszeit mit deinem Partner ist dir am wichtigsten. Du schätzt ungeteilte Aufmerksamkeit und gemeinsame Aktivitäten. Wenn dein Partner sich bewusst Zeit für dich nimmt, fühlst du dich geliebt und wertgeschätzt."
-      },
-      C: {
-        name: "Hilfsbereitschaft",
-        description: "Du fühlst dich geliebt, wenn dein Partner dir praktisch unter die Arme greift. Handlungen sagen für dich mehr als Worte. Wenn dein Partner dir im Alltag hilft oder Aufgaben für dich übernimmt, zeigt das echte Liebe."
-      },
-      D: {
-        name: "Lob und Anerkennung",
-        description: "Worte der Wertschätzung sind für dich besonders wichtig. Komplimente, ermutigende Worte und verbale Bestätigung lassen dich die Liebe deines Partners spüren. Du brauchst diese verbale Zuneigung, um dich geliebt zu fühlen."
-      },
-      E: {
-        name: "Körperliche Zärtlichkeiten",
-        description: "Körperliche Berührungen sind für dich der wichtigste Ausdruck von Liebe. Umarmungen, Küsse, Händchenhalten und andere zärtliche Gesten geben dir das Gefühl von Nähe, Sicherheit und Zuneigung."
-      }
-    };
+<script>
+  const loveLanguages = {
+    A: {
+      name: "Geschenke",
+      description:
+        "Du fühlst dich geliebt, wenn dein Partner dir durchdachte Geschenke macht. Es geht nicht um den materiellen Wert, sondern um die Geste und die Bedeutung dahinter. Geschenke symbolisieren für dich Liebe und Wertschätzung."
+    },
+    B: {
+      name: "Zweisamkeit",
+      description:
+        "Qualitätszeit mit deinem Partner ist dir am wichtigsten. Du schätzt ungeteilte Aufmerksamkeit und gemeinsame Aktivitäten. Wenn dein Partner sich bewusst Zeit für dich nimmt, fühlst du dich geliebt und wertgeschätzt."
+    },
+    C: {
+      name: "Hilfsbereitschaft",
+      description:
+        "Du fühlst dich geliebt, wenn dein Partner dir praktisch unter die Arme greift. Handlungen sagen für dich mehr als Worte. Wenn dein Partner dir im Alltag hilft oder Aufgaben für dich übernimmt, zeigt das echte Liebe."
+    },
+    D: {
+      name: "Lob und Anerkennung",
+      description:
+        "Worte der Wertschätzung sind für dich besonders wichtig. Komplimente, ermutigende Worte und verbale Bestätigung lassen dich die Liebe deines Partners spüren. Du brauchst diese verbale Zuneigung, um dich geliebt zu fühlen."
+    },
+    E: {
+      name: "Körperliche Zärtlichkeiten",
+      description:
+        "Körperliche Berührungen sind für dich der wichtigste Ausdruck von Liebe. Umarmungen, Küsse, Händchenhalten und andere zärtliche Gesten geben dir das Gefühl von Nähe, Sicherheit und Zuneigung."
+    }
+  };
 
-    const form = document.getElementById('loveLanguageQuiz');
-    const resultDiv = document.getElementById('result');
-    const resultLanguage = document.getElementById('resultLanguage');
-    const resultDescription = document.getElementById('resultDescription');
-    const errorMessage = document.getElementById('errorMessage');
+  const form = document.getElementById("loveLanguageQuiz");
+  const resultDiv = document.getElementById("result");
+  const resultLanguage = document.getElementById("resultLanguage");
+  const resultDescription = document.getElementById("resultDescription");
+  const errorMessage = document.getElementById("errorMessage");
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      errorMessage.classList.remove('show');
-      
-      const formData = new FormData(form);
-      const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
-      
-      let answeredQuestions = 0;
-      for (let i = 1; i <= 30; i++) {
-        const answer = formData.get(`q${i}`);
-        if (answer) {
-          answeredQuestions++;
-          counts[answer]++;
-        }
+  function calculateLoveLanguage() {
+    errorMessage.classList.remove("show");
+
+    const formData = new FormData(form);
+    const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+    let answeredQuestions = 0;
+    for (let i = 1; i <= 30; i++) {
+      const answer = formData.get(`q${i}`);
+      if (answer) {
+        answeredQuestions++;
+        counts[answer]++;
       }
-      
-      if (answeredQuestions < 30) {
-        errorMessage.classList.add('show');
-        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
+    }
+
+    if (answeredQuestions < 30) {
+      errorMessage.classList.add("show");
+      errorMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    let maxLetter = null;
+    let maxScore = -1;
+
+    for (const letter in counts) {
+      if (counts[letter] > maxScore) {
+        maxScore = counts[letter];
+        maxLetter = letter;
       }
-      
-      let maxLetter = null;
-      let maxScore = -1;
-      
-      for (const letter in counts) {
-        if (counts[letter] > maxScore) {
-          maxScore = counts[letter];
-          maxLetter = letter;
-        }
-      }
-      
-      if (maxLetter) {
-        const language = loveLanguages[maxLetter];
-        resultLanguage.textContent = language.name;
-        resultDescription.textContent = language.description;
-        resultDiv.classList.add('show');
-        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
-  </script>
+    }
+
+    if (!maxLetter) {
+      errorMessage.classList.add("show");
+      return;
+    }
+
+    const language = loveLanguages[maxLetter];
+    resultLanguage.textContent = language.name;
+    resultDescription.textContent = language.description;
+
+    // Balken-Auswertung für alle fünf Sprachen
+    const maxWidth = 220;
+    let barsHtml = '<div style="margin-top:24px;text-align:left;">';
+
+    const order = ["A", "B", "C", "D", "E"];
+    for (const letter of order) {
+      const score = counts[letter];
+      const width =
+        maxScore > 0 ? (score / maxScore) * maxWidth : 0;
+
+      barsHtml +=
+        '<div style="margin-bottom:10px;">' +
+        '<div style="margin-bottom:2px;">' +
+        loveLanguages[letter].name +
+        " (" +
+        letter +
+        "): " +
+        score +
+        " Punkte" +
+        "</div>" +
+        '<div style="background:#374151;width:' +
+        maxWidth +
+        'px;height:10px;border-radius:4px;overflow:hidden;">' +
+        '<div style="background:#38bdf8;width:' +
+        width +
+        'px;height:10px;"></div>' +
+        "</div>" +
+        "</div>";
+    }
+
+    barsHtml += "</div>";
+
+    // Beschreibung + Balken im gleichen Result-Container
+    resultDescription.innerHTML =
+      "<p>" +
+      language.description +
+      "</p>" +
+      barsHtml;
+
+    resultDiv.classList.add("show");
+    resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  // Absenden mit Enter-Taste verhindern, stattdessen unsere Funktion nutzen
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    calculateLoveLanguage();
+  });
+</script>
 </body>
 </html>
