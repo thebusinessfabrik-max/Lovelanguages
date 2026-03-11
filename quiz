@@ -246,7 +246,7 @@ h1 {
 </head>
 <body>
   <div class="container">
-    <h1>Welche Liebessprache sprichst du?</h1>
+    <h1>Welches ist deine Sprache der Wertschätzung?</h1>
     <p class="intro">Bei jeder Frage: <strong>Was bedeutet dir mehr in einer Beziehung?</strong></p>
 
     <form id="loveLanguageQuiz">
