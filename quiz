@@ -807,27 +807,27 @@ h1 {
 <script>
   const loveLanguages = {
     A: {
-      name: "Geschenke",
+      name: "Geschenke/Kleine Aufmerksamkeiten",
       description:
         "Du fühlst dich geliebt, wenn dein Partner dir durchdachte Geschenke macht. Es geht nicht um den materiellen Wert, sondern um die Geste und die Bedeutung dahinter. Geschenke symbolisieren für dich Liebe und Wertschätzung."
     },
     B: {
-      name: "Zweisamkeit",
+      name: "Gemeinsame Zeit",
       description:
         "Qualitätszeit mit deinem Partner ist dir am wichtigsten. Du schätzt ungeteilte Aufmerksamkeit und gemeinsame Aktivitäten. Wenn dein Partner sich bewusst Zeit für dich nimmt, fühlst du dich geliebt und wertgeschätzt."
     },
     C: {
-      name: "Hilfsbereitschaft",
+      name: "Hilfsbereitschaft/Unterstützung",
       description:
         "Du fühlst dich geliebt, wenn dein Partner dir praktisch unter die Arme greift. Handlungen sagen für dich mehr als Worte. Wenn dein Partner dir im Alltag hilft oder Aufgaben für dich übernimmt, zeigt das echte Liebe."
     },
     D: {
-      name: "Lob und Anerkennung",
+      name: "Worte der Anerkennung",
       description:
         "Worte der Wertschätzung sind für dich besonders wichtig. Komplimente, ermutigende Worte und verbale Bestätigung lassen dich die Liebe deines Partners spüren. Du brauchst diese verbale Zuneigung, um dich geliebt zu fühlen."
     },
     E: {
-      name: "Körperliche Zärtlichkeiten",
+      name: "Körperliche Gesten",
       description:
         "Körperliche Berührungen sind für dich der wichtigste Ausdruck von Liebe. Umarmungen, Küsse, Händchenhalten und andere zärtliche Gesten geben dir das Gefühl von Nähe, Sicherheit und Zuneigung."
     }
